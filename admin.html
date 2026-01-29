@@ -5,109 +5,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>바람의 기록들 - 관리자</title>
     <style>
-        /* 배경: 너의 이름은 스타일의 블루 그라데이션 */
+        /* 배경 및 기본 스타일 */
         body { 
             background: linear-gradient(180deg, #cfd9df 0%, #e2ebf0 100%); 
             font-family: -apple-system, sans-serif; 
             margin: 0; padding: 40px 20px; 
             min-height: 100vh; 
         }
-
         .admin-wrap { max-width: 600px; margin: 0 auto; }
-
-        h1 { 
-            font-size: 24px; text-align: center; color: #5a7a9a; 
-            margin-bottom: 40px; font-weight: 500; letter-spacing: 1px;
+        h1 { font-size: 24px; text-align: center; color: #5a7a9a; margin-bottom: 30px; font-weight: 500; }
+        
+        /* 상단 통계 판넬 */
+        .dashboard { 
+            background: white; padding: 20px; border-radius: 12px; 
+            display: flex; justify-content: space-around; 
+            margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
         }
+        .dash-item { text-align: center; }
+        .dash-item span { display: block; font-size: 12px; color: #888; margin-bottom: 5px; }
+        .dash-item b { font-size: 22px; color: #007aff; }
 
-        /* 폴라로이드 스타일 카드 */
+        /* 글 목록 카드 디자인 */
         .card { 
             background: white; padding: 25px; padding-bottom: 50px; 
-            margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
-            border-radius: 4px; position: relative; 
-            transform: rotate(-0.5deg); transition: 0.3s;
+            margin-bottom: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            border-radius: 8px; position: relative; 
         }
-        .card:nth-child(even) { transform: rotate(1deg); }
-
-        .sender { 
-            font-weight: 700; color: #007aff; font-size: 16px; 
-            display: block; margin-bottom: 12px; 
-        }
-
-        .message { 
-            font-size: 18px; color: #333; line-height: 1.6; 
-            word-break: break-all; white-space: pre-wrap;
-        }
-
-        /* 필름 날짜 스탬프 느낌 */
+        .sender { font-weight: 700; color: #007aff; font-size: 15px; display: block; margin-bottom: 10px; }
+        .message { font-size: 17px; color: #333; line-height: 1.6; word-break: break-all; white-space: pre-wrap; }
         .date { 
             position: absolute; bottom: 20px; right: 25px; 
-            color: #ff8c00; font-family: 'Courier New', monospace; 
-            font-size: 14px; font-weight: bold; opacity: 0.8; 
+            color: #ff8c00; font-family: monospace; font-size: 13px; 
+            font-weight: bold; opacity: 0.7; 
         }
-
-        /* 삭제 버튼 (시원하게 키움) */
+        
+        /* 삭제 버튼 */
         .del-btn { 
             position: absolute; top: 15px; right: 15px; 
-            background: rgba(255, 59, 48, 0.1); border: none; 
-            color: #ff3b30; width: 40px; height: 40px; 
-            border-radius: 50%; cursor: pointer; font-size: 20px;
+            background: #fff1f1; border: none; color: #ff3b30; 
+            width: 35px; height: 35px; border-radius: 50%; 
+            cursor: pointer; font-size: 18px; 
             display: flex; align-items: center; justify-content: center;
         }
-
-        .back-btn { 
-            display: block; text-align: center; margin-top: 60px; 
-            color: #888; text-decoration: none; font-size: 15px; 
-        }
-
-        /* 모바일 대응: 글씨 더 크게 */
-        @media screen and (max-width: 600px) {
-            h1 { font-size: 28px; }
-            .message { font-size: 20px; }
-            .sender { font-size: 18px; }
-        }
+        .del-btn:hover { background: #ffebeb; }
     </style>
 </head>
 <body>
 
     <div class="admin-wrap">
         <h1>도착한 바람들의 기록</h1>
+        
+        <div class="dashboard">
+            <div class="dash-item"><span>총 방문자</span><b id="v-count">0</b></div>
+            <div class="dash-item"><span>모인 바람</span><b id="w-count">0</b></div>
+        </div>
+
         <div id="list"></div>
-        <a href="index.html" class="back-btn">← 메인 화면으로 돌아가기</a>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script>
-        // 🔴 형우님의 Firebase 설정을 똑같이 붙여넣으세요!
+        // ---------------------------------------------------------
+        // 🔴 아래 Config 항목에 본인의 파이어베이스 설정을 복사해서 넣으세요!
+        // ---------------------------------------------------------
         const firebaseConfig = {
-            apiKey: "...",
-            authDomain: "...",
-            databaseURL: "...",
-            projectId: "...",
-            storageBucket: "...",
-            messagingSenderId: "...",
-            appId: "..."
+            apiKey: "AIzaSyBAkeP6s7tipidK3BS2E4QejSRSNqjhllY",
+  authDomain: "our-wish-2026.firebaseapp.com",
+  databaseURL: "https://our-wish-2026-default-rtdb.firebaseio.com",
+  projectId: "our-wish-2026",
+  storageBucket: "our-wish-2026.firebasestorage.app",
+  messagingSenderId: "614027160809",
+  appId: "1:614027160809:web:8400fdd04bb34067ee5478",
+  measurementId: "G-3SG4D9652W"
         };
 
-        // Firebase 초기화
+        // 초기화
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 실시간 데이터 감시 및 화면 출력
+        // [실시간] 방문자 수 가져오기
+        database.ref('stats/visitorCount').on('value', (snapshot) => {
+            document.getElementById('v-count').innerText = snapshot.val() || 0;
+        });
+
+        // [실시간] 글 목록 가져오기
         database.ref('wishes').on('value', (snapshot) => {
             const listArea = document.getElementById('list');
             const data = snapshot.val();
             
+            // 총 바람 개수 업데이트
+            const wishCount = snapshot.numChildren();
+            document.getElementById('w-count').innerText = wishCount;
+            
             if(!data) {
-                listArea.innerHTML = "<p style='text-align:center; color:#999; font-size:18px;'>아직 기록이 없습니다.</p>";
+                listArea.innerHTML = "<p style='text-align:center; color:#999; margin-top:50px;'>아직 도착한 기록이 없습니다.</p>";
                 return;
             }
 
-            // 데이터를 배열로 바꿔서 최신순으로 정렬
+            // 데이터를 최신순으로 정렬해서 화면에 그리기
             const items = Object.entries(data).reverse(); 
-            
             listArea.innerHTML = items.map(([key, item]) => `
                 <div class="card">
                     <span class="sender">From: ${item.nickname}</span>
@@ -118,9 +116,9 @@
             `).join('');
         });
 
-        // 삭제 함수
+        // 삭제 기능 함수
         function removeWish(key) {
-            if(confirm("이 소중한 기록을 삭제하시겠습니까?")) {
+            if(confirm("이 소중한 기록을 정말 삭제하시겠습니까?")) {
                 database.ref('wishes/' + key).remove()
                 .then(() => alert("삭제되었습니다."))
                 .catch((e) => alert("삭제 실패: " + e.message));
