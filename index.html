@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>하나의 바람으로 시작된, 우리의 바람</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif; }
+        
+        /* 배경: 청량한 애니메이션 하늘 이미지 */
+        .bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?q=80&w=1920') no-repeat center center;
+            background-size: cover; z-index: -2;
+        }
+
+        /* 필름 감성 레이어 (비네팅 효과) */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.4) 100%);
+            pointer-events: none; z-index: 1;
+        }
+
+        .container {
+            position: relative; z-index: 10;
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+            padding: 20px;
+        }
+
+        .glass-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 45px 35px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.25);
+            width: 100%; max-width: 340px; text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            word-break: keep-all;
+        }
+
+        .subtitle {
+            font-size: 13.5px;
+            color: rgba(255, 255, 255, 0.85);
+            margin-top: 0;
+            margin-bottom: 40px;
+            font-weight: 300;
+            line-height: 1.6;
+            word-break: keep-all;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        input, textarea {
+            width: 100%; background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px; padding: 14px; margin-bottom: 15px; color: white; outline: none; box-sizing: border-box;
+            font-size: 14.5px; transition: 0.3s;
+        }
+        input:focus, textarea:focus { background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 255, 255, 0.5); }
+        input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.6); }
+
+        button {
+            width: 100%; padding: 16px; background: white; color: #2c3e50;
+            border: none; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer;
+            transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); background: #fcfcfc; }
+    </style>
+</head>
+<body>
+    <div class="bg"></div>
+    <div class="overlay"></div>
+
+    <div class="container">
+        <div class="glass-box">
+            <h1>하나의 바람으로 시작된, 우리의 바람.</h1>
+            <p class="subtitle">학과 혹은 학생회에게<br>학우들의 바람을 적어주세요.</p>
+            
+            <input type="text" id="nick" placeholder="이름 (익명 가능)">
+            <textarea id="msg" placeholder="여기에 당신의 마음을 담아주세요" rows="4"></textarea>
+            <button onclick="saveWish()">바람 전달하기</button>
+        </div>
+    </div>
+
+    <script>
+        function saveWish() {
+            const nickname = document.getElementById('nick').value;
+            const message = document.getElementById('msg').value;
+
+            if(!nickname.trim() || !message.trim()) {
+                alert("기록할 내용을 모두 입력해 주세요.");
+                return;
+            }
+
+            const data = JSON.parse(localStorage.getItem('wish_data') || '[]');
+            data.push({ nickname, message, date: new Date().toLocaleString() });
+            localStorage.setItem('wish_data', JSON.stringify(data));
+
+            alert("소중한 바람이 성공적으로 기록되었습니다.");
+            location.reload();
+        }
+    </script>
+</body>
+</html>
