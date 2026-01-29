@@ -32,6 +32,7 @@
             <p class="subtitle">학과 혹은 학생회에게<br>학우들의 바람을 적어주세요.</p>
             <input type="text" id="nick" placeholder="기억될 이름">
             <textarea id="msg" placeholder="여기에 당신의 마음을 담아주세요" rows="4"></textarea>
+            
             <button type="button" onclick="saveWish()">바람 전달하기</button>
         </div>
     </div>
@@ -40,7 +41,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script>
-        // 🔴 형우님의 Firebase 설정을 아래에 정확히 넣어주세요!
+        // -----------------------------------------------------------------
+        // ⚠️ 주의: 이 아래로는 절대 'import'라는 단어를 사용하지 마세요!
+        // -----------------------------------------------------------------
+
+        // 2. 파이어베이스 설정값 채우기
         const firebaseConfig = {
             apiKey: "AIzaSyBAkeP6s7tipidK3BS2E4QejSRSNqjhllY",
   authDomain: "our-wish-2026.firebaseapp.com",
@@ -52,13 +57,13 @@
   measurementId: "G-3SG4D9652W"
         };
 
-        // Firebase 초기화
+        // 3. 초기화
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 🟢 여기가 바로 그 saveWish 함수입니다!
+        // 4. 전송 함수 정의
         function saveWish() {
-            console.log("버튼이 눌렸습니다!"); 
+            console.log("전송 시도 시작...");
 
             const nickname = document.getElementById('nick').value;
             const message = document.getElementById('msg').value;
@@ -68,17 +73,19 @@
                 return;
             }
 
+            // Realtime Database에 저장
             database.ref('wishes').push({
                 nickname: nickname,
                 message: message,
                 date: new Date().toLocaleString()
             })
             .then(() => {
-                alert("성공적으로 전달되었습니다.");
+                alert("소중한 바람이 전달되었습니다.");
                 location.reload();
             })
-            .catch((e) => {
-                alert("오류 발생: " + e.message);
+            .catch((error) => {
+                console.error("Firebase Error:", error);
+                alert("전송 실패: " + error.message);
             });
         }
     </script>
