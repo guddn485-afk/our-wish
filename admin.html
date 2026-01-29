@@ -2,105 +2,85 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>하나의 바람으로 시작된, 우리의 바람</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>바람의 기록들 - 관리자</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif; }
-        
-        .bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?q=80&w=1920') no-repeat center center; background-size: cover; z-index: -2; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.4) 100%); pointer-events: none; z-index: 1; }
-        .film-grain { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://vignette.wikia.nocookie.net/creepypasta/images/8/80/Film_Grain.png/revision/latest?cb=20150914013401'); opacity: 0.04; pointer-events: none; z-index: 2; }
-
-        .container { position: relative; z-index: 10; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; }
-
-        /* 유리 박스 너비 확대 및 패딩 조정 */
-        .glass-box { 
-            background: rgba(255, 255, 255, 0.12); 
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); 
-            padding: 40px 25px; 
-            border-radius: 24px; 
-            border: 1px solid rgba(255, 255, 255, 0.2); 
-            width: 100%; 
-            max-width: 400px; /* 기존보다 조금 더 넓게 */
-            text-align: center; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+        /* 배경: 너의 이름은 스타일의 블루 그라데이션 */
+        body { 
+            background: linear-gradient(180deg, #cfd9df 0%, #e2ebf0 100%); 
+            font-family: -apple-system, sans-serif; 
+            margin: 0; padding: 40px 20px; 
+            min-height: 100vh; 
         }
 
-        /* 제목 크기 조정 */
-        h1 { font-size: 24px; font-weight: 600; color: white; margin-bottom: 12px; letter-spacing: 0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); word-break: keep-all; }
-        .subtitle { font-size: 15px; color: rgba(255, 255, 255, 0.9); margin-top: 0; margin-bottom: 35px; font-weight: 300; line-height: 1.6; word-break: keep-all; }
+        .admin-wrap { max-width: 600px; margin: 0 auto; }
 
-        /* 입력칸 사이즈 대폭 확대 */
-        input, textarea { 
-            width: 100%; 
-            background: rgba(255, 255, 255, 0.15); 
-            border: 1px solid rgba(255, 255, 255, 0.3); 
-            border-radius: 14px; 
-            padding: 18px; /* 패딩을 키워서 터치 영역 확보 */
-            margin-bottom: 18px; 
-            color: white; 
-            outline: none; 
-            box-sizing: border-box; 
-            font-size: 16px; /* 모바일 자동확대 방지를 위한 최소 크기 */
-            -webkit-appearance: none; /* iOS 기본 스타일 제거 */
+        h1 { 
+            font-size: 24px; text-align: center; color: #5a7a9a; 
+            margin-bottom: 40px; font-weight: 500; letter-spacing: 1px;
         }
-        input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.6); }
 
-        /* 버튼 사이즈 확대 */
-        button { 
-            width: 100%; 
-            padding: 20px; 
-            background: white; 
-            color: #2c3e50; 
-            border: none; 
-            border-radius: 14px; 
-            font-weight: 700; 
-            font-size: 17px; 
-            cursor: pointer; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
-            transition: 0.2s;
+        /* 폴라로이드 스타일 카드 */
+        .card { 
+            background: white; padding: 25px; padding-bottom: 50px; 
+            margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+            border-radius: 4px; position: relative; 
+            transform: rotate(-0.5deg); transition: 0.3s;
         }
-        button:active { transform: scale(0.98); background: #f0f0f0; }
+        .card:nth-child(even) { transform: rotate(1deg); }
+
+        .sender { 
+            font-weight: 700; color: #007aff; font-size: 16px; 
+            display: block; margin-bottom: 12px; 
+        }
+
+        .message { 
+            font-size: 18px; color: #333; line-height: 1.6; 
+            word-break: break-all; white-space: pre-wrap;
+        }
+
+        /* 필름 날짜 스탬프 느낌 */
+        .date { 
+            position: absolute; bottom: 20px; right: 25px; 
+            color: #ff8c00; font-family: 'Courier New', monospace; 
+            font-size: 14px; font-weight: bold; opacity: 0.8; 
+        }
+
+        /* 삭제 버튼 (시원하게 키움) */
+        .del-btn { 
+            position: absolute; top: 15px; right: 15px; 
+            background: rgba(255, 59, 48, 0.1); border: none; 
+            color: #ff3b30; width: 40px; height: 40px; 
+            border-radius: 50%; cursor: pointer; font-size: 20px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .back-btn { 
+            display: block; text-align: center; margin-top: 60px; 
+            color: #888; text-decoration: none; font-size: 15px; 
+        }
+
+        /* 모바일 대응: 글씨 더 크게 */
+        @media screen and (max-width: 600px) {
+            h1 { font-size: 28px; }
+            .message { font-size: 20px; }
+            .sender { font-size: 18px; }
+        }
     </style>
 </head>
 <body>
-    <div class="bg"></div><div class="overlay"></div><div class="film-grain"></div>
-    <div class="container">
-        <div class="glass-box">
-            <h1>하나의 바람으로 시작된, 우리의 바람.</h1>
-            <p class="subtitle">학과 혹은 학생회에게<br>학우들의 바람을 적어주세요.</p>
-            <input type="text" id="nick" placeholder="기억될 이름">
-            <textarea id="msg" placeholder="여기에 당신의 마음을 담아주세요" rows="5"></textarea>
-            <button onclick="saveWish()">바람 전달하기</button>
-        </div>
+
+    <div class="admin-wrap">
+        <h1>도착한 바람들의 기록</h1>
+        <div id="list"></div>
+        <a href="index.html" class="back-btn">← 메인 화면으로 돌아가기</a>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script>
-        // // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBAkeP6s7tipidK3BS2E4QejSRSNqjhllY",
-  authDomain: "our-wish-2026.firebaseapp.com",
-  databaseURL: "https://our-wish-2026-default-rtdb.firebaseio.com",
-  projectId: "our-wish-2026",
-  storageBucket: "our-wish-2026.firebasestorage.app",
-  messagingSenderId: "614027160809",
-  appId: "1:614027160809:web:8400fdd04bb34067ee5478",
-  measurementId: "G-3SG4D9652W"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+        // 🔴 형우님의 Firebase 설정을 똑같이 붙여넣으세요!
         const firebaseConfig = {
             apiKey: "...",
             authDomain: "...",
@@ -111,22 +91,40 @@ const analytics = getAnalytics(app);
             appId: "..."
         };
 
+        // Firebase 초기화
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        function saveWish() {
-            const nickname = document.getElementById('nick').value;
-            const message = document.getElementById('msg').value;
-            if(!nickname.trim() || !message.trim()) return alert("내용을 입력해 주세요.");
+        // 실시간 데이터 감시 및 화면 출력
+        database.ref('wishes').on('value', (snapshot) => {
+            const listArea = document.getElementById('list');
+            const data = snapshot.val();
+            
+            if(!data) {
+                listArea.innerHTML = "<p style='text-align:center; color:#999; font-size:18px;'>아직 기록이 없습니다.</p>";
+                return;
+            }
 
-            database.ref('wishes').push({
-                nickname: nickname,
-                message: message,
-                date: new Date().toLocaleString()
-            }).then(() => {
-                alert("소중한 바람이 성공적으로 전달되었습니다.");
-                location.reload();
-            });
+            // 데이터를 배열로 바꿔서 최신순으로 정렬
+            const items = Object.entries(data).reverse(); 
+            
+            listArea.innerHTML = items.map(([key, item]) => `
+                <div class="card">
+                    <span class="sender">From: ${item.nickname}</span>
+                    <div class="message">${item.message}</div>
+                    <div class="date">${item.date}</div>
+                    <button class="del-btn" onclick="removeWish('${key}')">×</button>
+                </div>
+            `).join('');
+        });
+
+        // 삭제 함수
+        function removeWish(key) {
+            if(confirm("이 소중한 기록을 삭제하시겠습니까?")) {
+                database.ref('wishes/' + key).remove()
+                .then(() => alert("삭제되었습니다."))
+                .catch((e) => alert("삭제 실패: " + e.message));
+            }
         }
     </script>
 </body>
