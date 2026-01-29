@@ -6,61 +6,21 @@
     <title>하나의 바람으로 시작된, 우리의 바람</title>
     <style>
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: -apple-system, sans-serif; }
-        
         .bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?q=80&w=1920') no-repeat center center; background-size: cover; z-index: -2; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.4) 100%); pointer-events: none; z-index: 1; }
         .film-grain { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://vignette.wikia.nocookie.net/creepypasta/images/8/80/Film_Grain.png/revision/latest?cb=20150914013401'); opacity: 0.04; pointer-events: none; z-index: 2; }
-
         .container { position: relative; z-index: 10; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; }
-
-        /* 기본 PC 스타일 */
-        .glass-box { 
-            background: rgba(255, 255, 255, 0.12); 
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); 
-            padding: 40px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.2); 
-            width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
-        }
-
-        h1 { font-size: 22px; color: white; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); word-break: keep-all; }
+        .glass-box { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 40px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.2); width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        h1 { font-size: 22px; color: white; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); word-break: keep-all; font-weight: 600; }
         .subtitle { font-size: 14px; color: rgba(255, 255, 255, 0.9); margin-bottom: 30px; font-weight: 300; line-height: 1.5; word-break: keep-all; }
-
-        input, textarea { 
-            width: 100%; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); 
-            border-radius: 12px; padding: 15px; margin-bottom: 15px; color: white; outline: none; box-sizing: border-box; font-size: 16px;
-        }
-
-        button { 
-            width: 100%; padding: 16px; background: white; color: #2c3e50; border: none; border-radius: 12px; 
-            font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s;
-        }
-
-        /* ------------------------------------------- */
-        /* 🔥 모바일 전용 스타일 (여기가 핵심!) 🔥 */
-        /* ------------------------------------------- */
+        input, textarea { width: 100%; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 15px; color: white; outline: none; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 16px; background: white; color: #2c3e50; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s; }
         @media screen and (max-width: 600px) {
-            .glass-box {
-                padding: 50px 30px; /* 안쪽 여백 대폭 확대 */
-                max-width: 90%; /* 화면의 90%까지 사용 */
-            }
-            h1 {
-                font-size: 28px !important; /* 제목 대폭 확대 */
-                margin-bottom: 15px;
-            }
-            .subtitle {
-                font-size: 18px !important; /* 부제목 대폭 확대 */
-                margin-bottom: 40px;
-            }
-            input, textarea {
-                padding: 22px !important; /* 입력창 높이 확대 */
-                font-size: 18px !important; /* 입력 폰트 확대 */
-                margin-bottom: 20px;
-                border-radius: 16px;
-            }
-            button {
-                padding: 22px !important; /* 버튼 높이 확대 */
-                font-size: 20px !important; /* 버튼 글씨 대폭 확대 */
-                border-radius: 16px;
-            }
+            .glass-box { padding: 50px 30px; max-width: 95%; }
+            h1 { font-size: 28px !important; }
+            .subtitle { font-size: 18px !important; }
+            input, textarea { padding: 22px !important; font-size: 18px !important; }
+            button { padding: 22px !important; font-size: 20px !important; }
         }
     </style>
 </head>
@@ -72,7 +32,7 @@
             <p class="subtitle">학과 혹은 학생회에게<br>학우들의 바람을 적어주세요.</p>
             <input type="text" id="nick" placeholder="기억될 이름">
             <textarea id="msg" placeholder="여기에 당신의 마음을 담아주세요" rows="4"></textarea>
-            <button onclick="saveWish()">바람 전달하기</button>
+            <button type="button" onclick="saveWish()">바람 전달하기</button>
         </div>
     </div>
 
@@ -80,16 +40,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script>
-        // // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBAkeP6s7tipidK3BS2E4QejSRSNqjhllY",
+        // 🔴 형우님의 Firebase 설정을 아래에 정확히 넣어주세요!
+        const firebaseConfig = {
+            apiKey: "AIzaSyBAkeP6s7tipidK3BS2E4QejSRSNqjhllY",
   authDomain: "our-wish-2026.firebaseapp.com",
   databaseURL: "https://our-wish-2026-default-rtdb.firebaseio.com",
   projectId: "our-wish-2026",
@@ -97,36 +50,35 @@ const firebaseConfig = {
   messagingSenderId: "614027160809",
   appId: "1:614027160809:web:8400fdd04bb34067ee5478",
   measurementId: "G-3SG4D9652W"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-        const firebaseConfig = {
-            apiKey: "...",
-            authDomain: "...",
-            databaseURL: "...",
-            projectId: "...",
-            storageBucket: "...",
-            messagingSenderId: "...",
-            appId: "..."
         };
 
+        // Firebase 초기화
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // 🟢 여기가 바로 그 saveWish 함수입니다!
         function saveWish() {
+            console.log("버튼이 눌렸습니다!"); 
+
             const nickname = document.getElementById('nick').value;
             const message = document.getElementById('msg').value;
-            if(!nickname.trim() || !message.trim()) return alert("내용을 입력해 주세요.");
+
+            if(!nickname.trim() || !message.trim()) {
+                alert("내용을 입력해 주세요.");
+                return;
+            }
 
             database.ref('wishes').push({
                 nickname: nickname,
                 message: message,
                 date: new Date().toLocaleString()
-            }).then(() => {
-                alert("소중한 바람이 성공적으로 전달되었습니다.");
+            })
+            .then(() => {
+                alert("성공적으로 전달되었습니다.");
                 location.reload();
+            })
+            .catch((e) => {
+                alert("오류 발생: " + e.message);
             });
         }
     </script>
