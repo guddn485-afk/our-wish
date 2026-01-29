@@ -2,112 +2,90 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>바람의 기록들</title>
+    <title>바람의 기록들 - 관리자</title>
     <style>
-        body {
-            background: #f4f4f4;
-            font-family: -apple-system, sans-serif;
-            padding: 40px 20px;
-            margin: 0;
-            background: linear-gradient(to bottom, #d9e7ff, #ffffff);
-            min-height: 100vh;
-        }
-        .admin-container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        h1 {
-            font-size: 18px;
-            font-weight: 400;
-            text-align: center;
-            color: #4a6a8a;
-            margin-bottom: 40px;
-            letter-spacing: 1px;
-        }
-        .photo-card {
-            background: white;
-            padding: 20px;
-            padding-bottom: 40px; /* 폴라로이드 느낌 */
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-radius: 2px;
-            position: relative;
-            transform: rotate(-1deg); /* 살짝 기울여서 자연스럽게 */
-        }
-        .photo-card:nth-child(even) { transform: rotate(1.5deg); }
-        
-        .sender {
-            font-weight: 600;
-            color: #007aff;
-            font-size: 13px;
-            margin-bottom: 10px;
-            display: block;
-        }
-        .msg {
-            font-size: 15px;
-            color: #333;
-            line-height: 1.6;
-        }
-        /* 필름 날짜 스탬프 느낌 */
-        .date-stamp {
-            position: absolute;
-            bottom: 15px;
-            right: 20px;
-            color: #ff8c00; /* 오렌지색 날짜 도장 */
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 12px;
-            font-weight: bold;
-            opacity: 0.8;
-        }
-        .delete-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            color: #ccc;
-            cursor: pointer;
-            font-size: 10px;
-        }
-        .delete-btn:hover { color: #ff3b30; }
-        .back-link { display: block; text-align: center; margin-top: 50px; color: #888; text-decoration: none; font-size: 13px; }
+        body { background: linear-gradient(to bottom, #cfd9df 0%, #e2ebf0 100%); font-family: -apple-system, sans-serif; padding: 40px 20px; min-height: 100vh; }
+        .admin-wrap { max-width: 500px; margin: 0 auto; }
+        h1 { font-size: 18px; text-align: center; color: #5a7a9a; margin-bottom: 50px; font-weight: 400; }
+        .card { background: white; padding: 20px; padding-bottom: 45px; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-radius: 2px; position: relative; }
+        .sender { font-weight: 600; color: #007aff; font-size: 13px; display: block; margin-bottom: 10px; }
+        .message { font-size: 15px; color: #333; line-height: 1.7; word-break: break-all; }
+        .date { position: absolute; bottom: 15px; right: 20px; color: #ff8c00; font-family: monospace; font-size: 12px; font-weight: bold; opacity: 0.7; }
+        .del-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #eee; cursor: pointer; }
+        .del-btn:hover { color: #ff3b30; }
     </style>
 </head>
 <body>
-    <div class="admin-container">
-        <h1>모아진 바람의 기록</h1>
+    <div class="admin-wrap">
+        <h1>도착한 바람들의 기록</h1>
         <div id="list"></div>
-        <a href="index.html" class="back-link">돌아가기</a>
     </div>
 
-    <script>
-        function load() {
-            const area = document.getElementById('list');
-            const data = JSON.parse(localStorage.getItem('wish_data') || '[]');
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
-            if(data.length === 0) {
-                area.innerHTML = "<p style='text-align:center; color:#999;'>아직 기록이 없습니다.</p>";
+    <script>
+        // // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBAkeP6s7tipidK3BS2E4QejSRSNqjhllY",
+  authDomain: "our-wish-2026.firebaseapp.com",
+  databaseURL: "https://our-wish-2026-default-rtdb.firebaseio.com",
+  projectId: "our-wish-2026",
+  storageBucket: "our-wish-2026.firebasestorage.app",
+  messagingSenderId: "614027160809",
+  appId: "1:614027160809:web:8400fdd04bb34067ee5478",
+  measurementId: "G-3SG4D9652W"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+        const firebaseConfig = {
+            apiKey: "본인의값",
+            authDomain: "본인의값",
+            databaseURL: "본인의값",
+            projectId: "본인의값",
+            storageBucket: "본인의값",
+            messagingSenderId: "본인의값",
+            appId: "본인의값"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // 실시간으로 데이터 읽어오기
+        database.ref('wishes').on('value', (snapshot) => {
+            const listArea = document.getElementById('list');
+            const data = snapshot.val();
+            
+            if(!data) {
+                listArea.innerHTML = "<p style='text-align:center; color:#aaa;'>아직 기록이 없습니다.</p>";
                 return;
             }
 
-            area.innerHTML = data.reverse().map((item, idx) => `
-                <div class="photo-card">
+            const items = Object.entries(data).reverse(); // 최신순 정렬
+            listArea.innerHTML = items.map(([key, item]) => `
+                <div class="card">
                     <span class="sender">${item.nickname}</span>
-                    <div class="msg">${item.message}</div>
-                    <div class="date-stamp">'${item.date.split('.').join(' ')}</div>
-                    <button class="delete-btn" onclick="remove(${data.length - 1 - idx})">삭제</button>
+                    <div class="message">${item.message}</div>
+                    <div class="date">' ${item.date}</div>
+                    <button class="del-btn" onclick="removeWish('${key}')">×</button>
                 </div>
             `).join('');
-        }
+        });
 
-        function remove(idx) {
-            if(!confirm("이 기록을 지우시겠습니까?")) return;
-            let data = JSON.parse(localStorage.getItem('wish_data') || '[]');
-            data.splice(idx, 1);
-            localStorage.setItem('wish_data', JSON.stringify(data));
-            load();
+        function removeWish(key) {
+            if(confirm("이 기록을 삭제하시겠습니까?")) {
+                database.ref('wishes/' + key).remove();
+            }
         }
-        window.onload = load;
     </script>
 </body>
 </html>
